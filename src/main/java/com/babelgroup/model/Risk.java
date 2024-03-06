@@ -1,4 +1,4 @@
-package com.babelgroup;
+package com.babelgroup.model;
 
 import lombok.Data;
 

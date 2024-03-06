@@ -1,4 +1,4 @@
-package com.babelgroup;
+package com.babelgroup.model;
 
 public enum PaymentType {
     PRIMER_RIESGO,

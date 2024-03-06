@@ -1,6 +1,6 @@
 package com.babelgroup.example;
 
-import com.babelgroup.*;
+import com.babelgroup.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
