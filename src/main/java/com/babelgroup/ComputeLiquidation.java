@@ -8,13 +8,17 @@ import java.util.List;
 
 public class ComputeLiquidation {
 
-    public static void compute(Sinister sinister){
+    public static double compute(Sinister sinister){
 
         double total = computeDamages(sinister.getDamageList());
 
-        if (sinister.getRealCapital() > sinister.getPolicy().getInsuredCapital()){
-            total *= sinister.getRealCapital() / sinister.getPolicy().getInsuredCapital();
+        total = Math.min(total, sinister.getPolicy().getInsuredCapitalContent());
+
+        if (sinister.getRealCapital() > sinister.getPolicy().getInsuredCapitalContent()){
+            total *= sinister.getRealCapital() / sinister.getPolicy().getInsuredCapitalContent();
         }
+
+        return total;
     }
 
     private static double computeDamages(List<Damage> damageList){
@@ -34,7 +38,7 @@ public class ComputeLiquidation {
         double total = 0;
 
         switch (warranty.getPaymentType()){
-            case PRIMER_RIESGO -> total += warranty.getCapitalInsured();
+            case PRIMER_RIESGO -> total += damage.getDamageCost();
             case REPOSICION_NUEVO -> total += damage.getNewValue();
             case VALOR_REAL -> total += computeRealValue(damage);
         }

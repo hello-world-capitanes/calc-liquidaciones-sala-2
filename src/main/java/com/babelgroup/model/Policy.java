@@ -4,7 +4,8 @@ public class Policy {
 
     private Client client;
     private Product product;
-    private double insuredCapital;
+    private double insuredCapitalContainer;
+    private double insuredCapitalContent;
 
     public Client getClient() {
         return client;
@@ -22,11 +23,19 @@ public class Policy {
         this.product = product;
     }
 
-    public double getInsuredCapital() {
-        return insuredCapital;
+    public double getInsuredCapitalContainer() {
+        return insuredCapitalContainer;
     }
 
-    public void setInsuredCapital(double insuredCapital) {
-        this.insuredCapital = insuredCapital;
+    public void setInsuredCapitalContainer(double insuredCapitalContainer) {
+        this.insuredCapitalContainer = insuredCapitalContainer;
+    }
+
+    public double getInsuredCapitalContent() {
+        return insuredCapitalContent;
+    }
+
+    public void setInsuredCapitalContent(double insuredCapitalContent) {
+        this.insuredCapitalContent = insuredCapitalContent;
     }
 }

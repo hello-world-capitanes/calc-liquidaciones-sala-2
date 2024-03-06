@@ -6,6 +6,7 @@ public class Damage {
     private double newValue;
     private double initialValue;
     private int antiquity;
+    private double damageCost;
 
     public ProductWarranty getWarranty() {
         return warranty;
@@ -37,5 +38,13 @@ public class Damage {
 
     public void setAntiquity(int antiquity) {
         this.antiquity = antiquity;
+    }
+
+    public double getDamageCost() {
+        return damageCost;
+    }
+
+    public void setDamageCost(double damageCost) {
+        this.damageCost = damageCost;
     }
 }
