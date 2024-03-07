@@ -1,4 +1,4 @@
-package com.babelgroup.example;
+package com.babelgroup.repositories;
 
 import com.babelgroup.model.*;
 

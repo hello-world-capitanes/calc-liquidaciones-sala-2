@@ -1,4 +1,4 @@
-package com.babelgroup;
+package com.babelgroup.business;
 
 import com.babelgroup.model.Damage;
 import com.babelgroup.model.ProductWarranty;
