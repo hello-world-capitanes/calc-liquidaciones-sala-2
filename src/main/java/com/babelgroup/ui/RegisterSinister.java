@@ -1,6 +1,6 @@
 package com.babelgroup.ui;
 
-import com.babelgroup.PolicyNotFound;
+import com.babelgroup.exceptions.PolicyNotFoundException;
 import com.babelgroup.model.*;
 
 import java.util.ArrayList;
@@ -60,14 +60,14 @@ public class RegisterSinister {
                 damage.setAntiquity(scanner.nextInt());
 
                 damage.setWarranty(getWarrantyFromPolicy(policy));
-            } catch (PolicyNotFound e) {
+            } catch (PolicyNotFoundException e) {
                 System.out.println(e.getMessage());
             }
         }
         return damageList;
     }
 
-    private ProductWarranty getWarrantyFromPolicy(Policy policy) throws PolicyNotFound {
+    private ProductWarranty getWarrantyFromPolicy(Policy policy) throws PolicyNotFoundException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Seleccione la garantía afectada por el daño");
         System.out.println("En caso de que no haya una garantía que cubra el daño, escriba 0");
@@ -78,7 +78,7 @@ public class RegisterSinister {
 
         int option = scanner.nextInt();
         if (option == 0 || option > warranties.size()){
-            throw new PolicyNotFound();
+            throw new PolicyNotFoundException();
         }
 
         return warranties.get(option-1);

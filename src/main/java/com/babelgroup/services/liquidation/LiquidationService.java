@@ -1,14 +1,31 @@
-package com.babelgroup.business;
+package com.babelgroup.services.liquidation;
 
+import com.babelgroup.dtos.DtoToEntity;
+import com.babelgroup.dtos.SinisterDto;
 import com.babelgroup.model.Damage;
 import com.babelgroup.model.ProductWarranty;
 import com.babelgroup.model.Sinister;
+import com.babelgroup.repositories.policy.IPolicyRepository;
+import com.babelgroup.repositories.productwarranty.IProductWarrantyRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class ComputeLiquidation {
+@Service
+public class LiquidationService implements ILiquidationService {
 
-    public static double compute(Sinister sinister){
+    private final IPolicyRepository policyRepository;
+    private final IProductWarrantyRepository productWarrantyRepository;
+
+    public LiquidationService(IPolicyRepository policyRepository, IProductWarrantyRepository productWarrantyRepository) {
+        this.policyRepository = policyRepository;
+        this.productWarrantyRepository = productWarrantyRepository;
+    }
+
+    public double computeSinister(SinisterDto dto){
+        DtoToEntity converter = new DtoToEntity(policyRepository, productWarrantyRepository);
+
+        Sinister sinister = converter.sinister(dto);
 
         double total = computeDamages(sinister.getDamageList());
 
@@ -21,7 +38,7 @@ public class ComputeLiquidation {
         return total;
     }
 
-    private static double computeDamages(List<Damage> damageList){
+    private double computeDamages(List<Damage> damageList){
         double total = 0;
         for(Damage damage: damageList){
             total += computeDamage(damage);
@@ -29,7 +46,7 @@ public class ComputeLiquidation {
         return total;
     }
 
-    private static double computeDamage(Damage damage) {
+    private double computeDamage(Damage damage) {
         ProductWarranty warranty = damage.getWarranty();
         if (warranty.isExcluded()){
             return 0;
@@ -46,7 +63,7 @@ public class ComputeLiquidation {
         return Math.max(total, warranty.getCapitalInsured());
     }
 
-    private static double computeRealValue(Damage damage) {
+    private double computeRealValue(Damage damage) {
         int years = 7;
         double depreciationRate = 100/7;
         double antiquity = Math.min(damage.getAntiquity(), years) - years;
