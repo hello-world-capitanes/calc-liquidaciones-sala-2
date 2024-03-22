@@ -1,25 +1,24 @@
 package com.babelgroup.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Risk {
+@Entity
+public class Risk extends BaseEntity {
+
+    @Column(unique = true)
     private String code;
     private String name;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @OneToMany(mappedBy = "cause")
+    private List<ProductWarranty> productWarrantyList;
+    @OneToMany(mappedBy = "cause")
+    private List<Sinister> sinisterList;
 }

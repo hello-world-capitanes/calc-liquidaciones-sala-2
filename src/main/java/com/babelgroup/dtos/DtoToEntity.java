@@ -2,24 +2,29 @@ package com.babelgroup.dtos;
 
 import com.babelgroup.model.Damage;
 import com.babelgroup.model.Sinister;
-import com.babelgroup.repositories.productwarranty.IProductWarrantyRepository;
 import com.babelgroup.repositories.policy.IPolicyRepository;
+import com.babelgroup.repositories.risk.IRiskRepository;
+import com.babelgroup.repositories.warranty.IWarrantyRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DtoToEntity {
 
     private final IPolicyRepository policyRepository;
-    private final IProductWarrantyRepository productWarrantyRepository;
+    private final IWarrantyRepository warrantyRepository;
+    private final IRiskRepository riskRepository;
 
-    public DtoToEntity(IPolicyRepository policyRepository, IProductWarrantyRepository productWarrantyRepository) {
+    public DtoToEntity(IPolicyRepository policyRepository, IWarrantyRepository warrantyRepository, IRiskRepository riskRepository) {
         this.policyRepository = policyRepository;
-        this.productWarrantyRepository = productWarrantyRepository;
+        this.warrantyRepository = warrantyRepository;
+        this.riskRepository = riskRepository;
     }
 
-    public Sinister sinister(SinisterDto dto){
+    public Sinister sinister(SinisterDto dto) {
         Sinister sinister = new Sinister();
-        sinister.setPolicy(policyRepository.findPolicyById(dto.policy));
+        sinister.setPolicy(policyRepository.findById(dto.policy).orElseThrow());
         sinister.setDate(dto.date);
-        sinister.setCause(dto.cause);
+        sinister.setCause(riskRepository.findById(dto.cause).orElseThrow());
         sinister.setDamageList(dto.damageList.stream().map(this::damage).toList());
         sinister.setAddress(dto.address);
         sinister.setRealCapital(dto.realCapital);
@@ -27,9 +32,9 @@ public class DtoToEntity {
         return sinister;
     }
 
-    public Damage damage(DamageDto dto){
+    public Damage damage(DamageDto dto) {
         Damage damage = new Damage();
-        damage.setWarranty(productWarrantyRepository.findWarrantyById(dto.warranty));
+        damage.setWarranty(warrantyRepository.findById(dto.warranty).orElseThrow(() -> new RuntimeException("Warranty not found: ")));
         damage.setNewValue(dto.newValue);
         damage.setInitialValue(dto.initialValue);
         damage.setAntiquity(dto.antiquity);

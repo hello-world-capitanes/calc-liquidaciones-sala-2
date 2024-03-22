@@ -2,32 +2,26 @@ package com.babelgroup.services.liquidation;
 
 import com.babelgroup.dtos.DtoToEntity;
 import com.babelgroup.dtos.SinisterDto;
-import com.babelgroup.model.Damage;
-import com.babelgroup.model.ProductWarranty;
-import com.babelgroup.model.Sinister;
+import com.babelgroup.model.*;
 import com.babelgroup.repositories.policy.IPolicyRepository;
-import com.babelgroup.repositories.productwarranty.IProductWarrantyRepository;
+import com.babelgroup.repositories.warranty.IWarrantyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class LiquidationService implements ILiquidationService {
+    private final DtoToEntity dtoToEntity;
 
-    private final IPolicyRepository policyRepository;
-    private final IProductWarrantyRepository productWarrantyRepository;
-
-    public LiquidationService(IPolicyRepository policyRepository, IProductWarrantyRepository productWarrantyRepository) {
-        this.policyRepository = policyRepository;
-        this.productWarrantyRepository = productWarrantyRepository;
+    public LiquidationService(DtoToEntity dtoToEntity) {
+        this.dtoToEntity = dtoToEntity;
     }
 
+    @Override
     public double computeSinister(SinisterDto dto){
-        DtoToEntity converter = new DtoToEntity(policyRepository, productWarrantyRepository);
+        Sinister sinister = dtoToEntity.sinister(dto);
 
-        Sinister sinister = converter.sinister(dto);
-
-        double total = computeDamages(sinister.getDamageList());
+        double total = computeDamages(sinister);
 
         total = Math.min(total, sinister.getPolicy().getInsuredCapitalContent());
 
@@ -38,16 +32,16 @@ public class LiquidationService implements ILiquidationService {
         return total;
     }
 
-    private double computeDamages(List<Damage> damageList){
+    private double computeDamages(Sinister sinister){
         double total = 0;
-        for(Damage damage: damageList){
-            total += computeDamage(damage);
+        for(Damage damage: sinister.getDamageList()){
+            total += computeDamage(damage, sinister);
         }
         return total;
     }
 
-    private double computeDamage(Damage damage) {
-        ProductWarranty warranty = damage.getWarranty();
+    private double computeDamage(Damage damage, Sinister sinister){
+        ProductWarranty warranty = sinister.getPolicy().getProduct().getProductWarranties().stream().filter(w -> w.getCause().equals(sinister.getCause())).findFirst().orElseThrow();
         if (warranty.isExcluded()){
             return 0;
         }
@@ -65,7 +59,7 @@ public class LiquidationService implements ILiquidationService {
 
     private double computeRealValue(Damage damage) {
         int years = 7;
-        double depreciationRate = 100/7;
+        double depreciationRate = (double) 100 /years;
         double antiquity = Math.min(damage.getAntiquity(), years) - years;
         double total = damage.getInitialValue() * antiquity * depreciationRate;
         double minLiquidation = damage.getInitialValue() * 0.1;

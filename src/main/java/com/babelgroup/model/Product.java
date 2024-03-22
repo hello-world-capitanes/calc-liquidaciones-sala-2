@@ -1,37 +1,25 @@
 package com.babelgroup.model;
 
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Product {
+@Entity
+public class Product extends BaseEntity {
+
+    @Column(unique = true)
     private String code;
     private String name;
-    List<ProductWarranty> productWarranties;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<ProductWarranty> getProductWarranties() {
-        return productWarranties;
-    }
-
-    public void setProductWarranties(List<ProductWarranty> productWarranties) {
-        this.productWarranties = productWarranties;
-    }
+    @OneToMany(mappedBy = "product")
+    private List<ProductWarranty> productWarranties;
+    @OneToMany(mappedBy = "product")
+    private List<Policy> policyList;
 }

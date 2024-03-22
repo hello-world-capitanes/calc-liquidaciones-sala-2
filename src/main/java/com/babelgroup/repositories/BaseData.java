@@ -1,28 +1,36 @@
 package com.babelgroup.repositories;
 
 import com.babelgroup.model.*;
+import com.babelgroup.repositories.product.IProductRepository;
+import com.babelgroup.repositories.productwarranty.IProductWarrantyRepository;
+import com.babelgroup.repositories.risk.IRiskRepository;
+import com.babelgroup.repositories.warranty.IWarrantyRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Repository
 public class BaseData {
-    private Map<String, Product> products;
-    private Map<String, Risk> risks;
+    private final IRiskRepository riskRepository;
+    private final IWarrantyRepository warrantyRepository;
+    private final IProductRepository productRepository;
+    private final IProductWarrantyRepository productWarrantyRepository;
 
-    private Map<String, Warranty> warranties;
+    public BaseData(IRiskRepository riskRepository, IWarrantyRepository warrantyRepository, IProductRepository productRepository, IProductWarrantyRepository productWarrantyRepository) {
+        this.riskRepository = riskRepository;
+        this.warrantyRepository = warrantyRepository;
+        this.productRepository = productRepository;
+        this.productWarrantyRepository = productWarrantyRepository;
+    }
 
-    public BaseData(){
+    public void init() {
         createRisks();
         createWarranties();
         createProducts();
-
-
     }
 
-    private void createRisks(){
-        this.risks = new HashMap<String, Risk>();
+    private void createRisks() {
         Risk riskRoberyOutside = new Risk();
         riskRoberyOutside.setCode("RO");
         riskRoberyOutside.setName("Robery outside");
@@ -30,15 +38,15 @@ public class BaseData {
         riskWind.setCode("WI");
         riskWind.setName("Wind Over 50Kmh");
         Risk riskMoisture = new Risk();
-        riskWind.setCode("MS");
-        riskWind.setName("Moisture");
+        riskMoisture.setCode("MS");
+        riskMoisture.setName("Moisture");
 
-        this.risks.put(riskWind.getCode(), riskWind);
-
+        riskRepository.save(riskRoberyOutside);
+        riskRepository.save(riskMoisture);
+        riskRepository.save(riskWind);
     }
 
-    private void createWarranties(){
-        this.warranties = new HashMap<String, Warranty>();
+    private void createWarranties() {
         Warranty warrantyRoberyOutside = new Warranty();
         warrantyRoberyOutside.setCode("RO");
         warrantyRoberyOutside.setName("Robery outside");
@@ -56,97 +64,107 @@ public class BaseData {
         warrantyHomeAppliances.setName("Home Appliances");
         warrantyHomeAppliances.setWarrantyType(WarrantyType.CONTENT);
 
-        this.warranties.put(warrantyRoberyOutside.getCode(), warrantyRoberyOutside);
-        this.warranties.put(warrantyRoof.getCode(), warrantyRoof);
-        this.warranties.put(warrantyGeneralBuilding.getCode(), warrantyGeneralBuilding);
-        this.warranties.put(warrantyHomeAppliances.getCode(), warrantyHomeAppliances);
+        warrantyRepository.save(warrantyRoberyOutside);
+        warrantyRepository.save(warrantyRoof);
+        warrantyRepository.save(warrantyGeneralBuilding);
+        warrantyRepository.save(warrantyHomeAppliances);
     }
 
-    private void createProducts(){
-        this.products = new HashMap<String, Product>();
+    private void createProducts() {
         Product product = new Product();
         product.setCode("HOGAR15");
         product.setName("AXA Hogar 15");
 
         product.setProductWarranties(this.createProductWarranties());
-
-        this.products.put(product.getCode(), product);
+        productRepository.save(product);
     }
 
-    private List<ProductWarranty> createProductWarranties(){
+    private List<ProductWarranty> createProductWarranties() {
         List<ProductWarranty> warranties = new ArrayList<ProductWarranty>();
 
         ProductWarranty warrantyRoberyOutside = new ProductWarranty();
         warrantyRoberyOutside.setExcluded(false);
         warrantyRoberyOutside.setCapitalInsured(300.0);
-        warrantyRoberyOutside.setRisk(this.risks.get("RO"));
+        warrantyRoberyOutside.setCause(riskRepository.findByCode("RO").orElseThrow());
         warrantyRoberyOutside.setPaymentType(PaymentType.PRIMER_RIESGO);
-        warrantyRoberyOutside.setWarranty(this.warranties.get("RO"));
+        warrantyRoberyOutside.setWarranty(warrantyRepository.findByCode("RO").orElseThrow());
         ProductWarranty warrantyRoberyOutsideRoof = new ProductWarranty();
         warrantyRoberyOutsideRoof.setExcluded(true);
-        warrantyRoberyOutsideRoof.setRisk(this.risks.get("RO"));
-        warrantyRoberyOutsideRoof.setWarranty(this.warranties.get("RF"));
+        warrantyRoberyOutsideRoof.setCause(riskRepository.findByCode("RO").orElseThrow());
+        warrantyRoberyOutsideRoof.setWarranty(warrantyRepository.findByCode("RF").orElseThrow());
         ProductWarranty warrantyRoberyGeneralBuilding = new ProductWarranty();
         warrantyRoberyGeneralBuilding.setExcluded(true);
-        warrantyRoberyGeneralBuilding.setRisk(this.risks.get("RO"));
-        warrantyRoberyGeneralBuilding.setWarranty(this.warranties.get("GB"));
+        warrantyRoberyGeneralBuilding.setCause(riskRepository.findByCode("RO").orElseThrow());
+        warrantyRoberyGeneralBuilding.setWarranty(warrantyRepository.findByCode("GB").orElseThrow());
         ProductWarranty warrantyRoberyOutsideHomeAppliance = new ProductWarranty();
         warrantyRoberyOutsideHomeAppliance.setExcluded(true);
-        warrantyRoberyOutsideHomeAppliance.setRisk(this.risks.get("RO"));
-        warrantyRoberyOutsideHomeAppliance.setWarranty(this.warranties.get("HA"));
+        warrantyRoberyOutsideHomeAppliance.setCause(riskRepository.findByCode("RO").orElseThrow());
+        warrantyRoberyOutsideHomeAppliance.setWarranty(warrantyRepository.findByCode("HA").orElseThrow());
 
         warranties.add(warrantyRoberyOutside);
+        productWarrantyRepository.save(warrantyRoberyOutside);
         warranties.add(warrantyRoberyOutsideRoof);
+        productWarrantyRepository.save(warrantyRoberyOutsideRoof);
         warranties.add(warrantyRoberyGeneralBuilding);
+        productWarrantyRepository.save(warrantyRoberyGeneralBuilding);
         warranties.add(warrantyRoberyOutsideHomeAppliance);
+        productWarrantyRepository.save(warrantyRoberyOutsideHomeAppliance);
 
         ProductWarranty warrantyWindRoof = new ProductWarranty();
         warrantyWindRoof.setExcluded(false);
         warrantyWindRoof.setCapitalInsured(1300);
-        warrantyWindRoof.setRisk(this.risks.get("WI"));
+        warrantyWindRoof.setCause(riskRepository.findByCode("WI").orElseThrow());
         warrantyWindRoof.setPaymentType(PaymentType.REPOSICION_NUEVO);
-        warrantyWindRoof.setWarranty(this.warranties.get("RF"));
+        warrantyWindRoof.setWarranty(warrantyRepository.findByCode("RF").orElseThrow());
         ProductWarranty warrantyWindRoberyOutside = new ProductWarranty();
         warrantyWindRoberyOutside.setExcluded(true);
-        warrantyWindRoberyOutside.setRisk(this.risks.get("WI"));
-        warrantyWindRoberyOutside.setWarranty(this.warranties.get("RO"));
+        warrantyWindRoberyOutside.setCause(riskRepository.findByCode("WI").orElseThrow());
+        warrantyWindRoberyOutside.setWarranty(warrantyRepository.findByCode("RO").orElseThrow());
         ProductWarranty warrantyWindGeneralBuilding = new ProductWarranty();
         warrantyWindGeneralBuilding.setExcluded(true);
-        warrantyWindGeneralBuilding.setRisk(this.risks.get("WI"));
-        warrantyWindGeneralBuilding.setWarranty(this.warranties.get("GB"));
+        warrantyWindGeneralBuilding.setCause(riskRepository.findByCode("WI").orElseThrow());
+        warrantyWindGeneralBuilding.setWarranty(warrantyRepository.findByCode("GB").orElseThrow());
         ProductWarranty warrantyWindHomeAppliance = new ProductWarranty();
         warrantyWindHomeAppliance.setExcluded(true);
-        warrantyWindHomeAppliance.setRisk(this.risks.get("WI"));
-        warrantyWindHomeAppliance.setWarranty(this.warranties.get("HA"));
+        warrantyWindHomeAppliance.setCause(riskRepository.findByCode("WI").orElseThrow());
+        warrantyWindHomeAppliance.setWarranty(warrantyRepository.findByCode("HA").orElseThrow());
 
         warranties.add(warrantyWindRoof);
+        productWarrantyRepository.save(warrantyWindRoof);
         warranties.add(warrantyWindRoberyOutside);
+        productWarrantyRepository.save(warrantyWindRoberyOutside);
         warranties.add(warrantyWindGeneralBuilding);
+        productWarrantyRepository.save(warrantyWindGeneralBuilding);
         warranties.add(warrantyWindHomeAppliance);
+        productWarrantyRepository.save(warrantyWindHomeAppliance);
 
         ProductWarranty warrantyMoistureRoof = new ProductWarranty();
         warrantyMoistureRoof.setExcluded(false);
-        warrantyMoistureRoof.setRisk(this.risks.get("MS"));
-        warrantyMoistureRoof.setWarranty(this.warranties.get("RF"));
+        warrantyMoistureRoof.setCause(riskRepository.findByCode("MS").orElseThrow());
+        warrantyMoistureRoof.setWarranty(warrantyRepository.findByCode("RF").orElseThrow());
         ProductWarranty warrantyMoistureRoberyOutside = new ProductWarranty();
         warrantyMoistureRoberyOutside.setExcluded(true);
-        warrantyMoistureRoberyOutside.setRisk(this.risks.get("MS"));
-        warrantyMoistureRoberyOutside.setWarranty(this.warranties.get("RO"));
+        warrantyMoistureRoberyOutside.setCause(riskRepository.findByCode("MS").orElseThrow());
+        warrantyMoistureRoberyOutside.setWarranty(warrantyRepository.findByCode("RO").orElseThrow());
         ProductWarranty warrantyMoistureGeneralBuilding = new ProductWarranty();
         warrantyRoberyOutsideRoof.setExcluded(false);
         warrantyRoberyOutsideRoof.setCapitalInsured(20000);
-        warrantyRoberyOutsideRoof.setRisk(this.risks.get("MS"));
-        warrantyRoberyOutsideRoof.setWarranty(this.warranties.get("GB"));
+        warrantyRoberyOutsideRoof.setCause(riskRepository.findByCode("MS").orElseThrow());
+        warrantyRoberyOutsideRoof.setWarranty(warrantyRepository.findByCode("GB").orElseThrow());
         ProductWarranty warrantyMoistureHomeAppliance = new ProductWarranty();
         warrantyMoistureHomeAppliance.setExcluded(false);
         warrantyMoistureHomeAppliance.setCapitalInsured(3000);
-        warrantyMoistureHomeAppliance.setRisk(this.risks.get("MS"));
-        warrantyMoistureHomeAppliance.setWarranty(this.warranties.get("HA"));
+        warrantyMoistureHomeAppliance.setCause(riskRepository.findByCode("MS").orElseThrow());
+        warrantyMoistureHomeAppliance.setWarranty(warrantyRepository.findByCode("HA").orElseThrow());
 
         warranties.add(warrantyMoistureRoof);
+        productWarrantyRepository.save(warrantyMoistureRoof);
         warranties.add(warrantyMoistureRoberyOutside);
+        productWarrantyRepository.save(warrantyMoistureRoberyOutside);
         warranties.add(warrantyMoistureGeneralBuilding);
+        productWarrantyRepository.save(warrantyMoistureGeneralBuilding);
         warranties.add(warrantyMoistureHomeAppliance);
+        productWarrantyRepository.save(warrantyMoistureHomeAppliance);
 
         return warranties;
 

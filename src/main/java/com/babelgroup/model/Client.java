@@ -1,32 +1,21 @@
 package com.babelgroup.model;
 
-public class Client {
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Entity
+public class Client extends BaseEntity {
 
     private String name;
     private String address;
     private String nif;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getNif() {
-        return nif;
-    }
-
-    public void setNif(String nif) {
-        this.nif = nif;
-    }
+    @OneToMany(mappedBy = "client")
+    private List<Policy> policyList;
 }

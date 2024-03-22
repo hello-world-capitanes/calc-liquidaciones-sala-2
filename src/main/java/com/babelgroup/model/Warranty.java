@@ -1,34 +1,22 @@
 package com.babelgroup.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Warranty {
+@Entity
+public class Warranty extends BaseEntity {
+
+    @Column(unique = true)
     private String code;
     private String name;
+    @Enumerated(EnumType.STRING)
     private WarrantyType warrantyType;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public WarrantyType getWarrantyType() {
-        return warrantyType;
-    }
-
-    public void setWarrantyType(WarrantyType warrantyType) {
-        this.warrantyType = warrantyType;
-    }
+    @OneToMany(mappedBy = "warranty")
+    private List<Damage> damageList;
 }

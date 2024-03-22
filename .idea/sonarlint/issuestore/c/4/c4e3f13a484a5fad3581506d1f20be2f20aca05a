@@ -1,0 +1,21 @@
+
+Y
+java:S1854#">Remove this useless assignment to local variable "damageList".(£ïºŸÿÿÿÿÿ
+@	java:S106"+Replace this use of System.out by a logger.(øİèµ
+@	java:S106"+Replace this use of System.out by a logger.(ñÍŸ¶
+B
+java:S1874",Remove this use of "Date"; it is deprecated.(¤‹®Ğ
+E	java:S106"+Replace this use of System.out by a logger.(ƒıƒÜşÿÿÿÿ
+E	java:S106"+Replace this use of System.out by a logger.(ÎÈÂøÿÿÿÿ
+@	java:S106"+Replace this use of System.out by a logger.(Œõ¢ú
+J
+java:S1481#"/Remove this unused "damageList" local variable.(£ïºŸÿÿÿÿÿ
+@	java:S106,"+Replace this use of System.out by a logger.(¯ñ²À
+@	java:S1062"+Replace this use of System.out by a logger.(™ùú€
+E	java:S1065"+Replace this use of System.out by a logger.(‡õøÿÿÿÿ
+E	java:S1068"+Replace this use of System.out by a logger.(ÛÈËÿÿÿÿÿ
+E	java:S106;"+Replace this use of System.out by a logger.(“Æßñÿÿÿÿÿ
+E	java:S106@"+Replace this use of System.out by a logger.(©şêÜúÿÿÿÿ
+E	java:S106H"+Replace this use of System.out by a logger.(æéİ¶ıÿÿÿÿ
+@	java:S106I"+Replace this use of System.out by a logger.(²àâĞ
+@	java:S106L"+Replace this use of System.out by a logger.(Èşåî

@@ -1,52 +1,26 @@
 package com.babelgroup.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ProductWarranty {
-    private Risk risk;
-    private Warranty warranty;
+@Entity
+public class ProductWarranty extends BaseEntity {
+
     private boolean excluded;
+    @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
     private double capitalInsured;
 
-    public Risk getRisk() {
-        return risk;
-    }
-
-    public void setRisk(Risk risk) {
-        this.risk = risk;
-    }
-
-    public Warranty getWarranty() {
-        return warranty;
-    }
-
-    public void setWarranty(Warranty warranty) {
-        this.warranty = warranty;
-    }
-
-    public boolean isExcluded() {
-        return excluded;
-    }
-
-    public void setExcluded(boolean excluded) {
-        this.excluded = excluded;
-    }
-
-    public PaymentType getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(PaymentType paymentType) {
-        this.paymentType = paymentType;
-    }
-
-    public double getCapitalInsured() {
-        return capitalInsured;
-    }
-
-    public void setCapitalInsured(double capitalInsured) {
-        this.capitalInsured = capitalInsured;
-    }
+    @ManyToOne
+    private Risk cause;
+    @ManyToOne
+    private Warranty warranty;
+    @ManyToOne
+    private Product product;
 }
