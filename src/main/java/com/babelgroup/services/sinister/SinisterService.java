@@ -7,6 +7,7 @@ import com.babelgroup.repositories.policy.IPolicyRepository;
 import com.babelgroup.repositories.risk.IRiskRepository;
 import com.babelgroup.repositories.sinister.ISinisterRepository;
 import com.babelgroup.repositories.warranty.IWarrantyRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,9 +27,11 @@ public class SinisterService implements ISinisterService {
     @Override
     public SinisterDto add(SinisterDto sinisterDto) {
         Sinister sinister = new Sinister();
-        sinister.setPolicy(policyRepository.findById(sinisterDto.policy).orElseThrow());
+        sinister.setPolicy(policyRepository.findById(sinisterDto.policy)
+                .orElseThrow(() -> new EntityNotFoundException("Policy not found")));
         sinister.setDate(sinisterDto.date);
-        sinister.setCause(riskRepository.findById(sinisterDto.cause).orElseThrow());
+        sinister.setCause(riskRepository.findById(sinisterDto.cause)
+                .orElseThrow(() -> new EntityNotFoundException("Cause not found")));
         sinister.setDamageList(sinisterDto.damageList.stream().map(dtoToEntity::damage).toList());
         sinister.setRealCapital(sinisterDto.realCapital);
         sinisterRepository.save(sinister);
@@ -36,4 +39,20 @@ public class SinisterService implements ISinisterService {
         sinisterDto.id = sinister.getId();
         return sinisterDto;
     }
+
+    @Override
+    public SinisterDto get(String id){
+        Sinister sinister = sinisterRepository.findById(id).orElseThrow();
+        SinisterDto sinisterDto = new SinisterDto();
+        sinisterDto.id = sinister.getId();
+        sinisterDto.policy = sinister.getPolicy().getId();
+        sinisterDto.date = sinister.getDate();
+        sinisterDto.cause = sinister.getCause().getId();
+        sinisterDto.damageList = sinister.getDamageList().stream().map(dtoToEntity::damageDto).toList();
+        sinisterDto.address = sinister.getAddress();
+        sinisterDto.realCapital = sinister.getRealCapital();
+        return sinisterDto;
+    }
+
+
 }

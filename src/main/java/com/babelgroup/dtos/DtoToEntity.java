@@ -41,4 +41,15 @@ public class DtoToEntity {
         damage.setDamageCost(dto.damageCost);
         return damage;
     }
+
+     public DamageDto damageDto(Damage damage) {
+         DamageDto damageDto = new DamageDto();
+         damageDto.id = damage.getId();
+         damageDto.warranty = damage.getWarranty().getId();
+         damageDto.newValue = damage.getNewValue();
+         damageDto.initialValue = damage.getInitialValue();
+         damageDto.antiquity = damage.getAntiquity();
+         damageDto.damageCost = damage.getDamageCost();
+         return damageDto;
+    }
 }

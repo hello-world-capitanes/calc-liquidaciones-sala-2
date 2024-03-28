@@ -1,13 +1,16 @@
 package com.babelgroup.repositories;
 
 import com.babelgroup.model.*;
+import com.babelgroup.repositories.policy.IPolicyRepository;
 import com.babelgroup.repositories.product.IProductRepository;
 import com.babelgroup.repositories.productwarranty.IProductWarrantyRepository;
 import com.babelgroup.repositories.risk.IRiskRepository;
+import com.babelgroup.repositories.sinister.ISinisterRepository;
 import com.babelgroup.repositories.warranty.IWarrantyRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -16,6 +19,7 @@ public class BaseData {
     private final IWarrantyRepository warrantyRepository;
     private final IProductRepository productRepository;
     private final IProductWarrantyRepository productWarrantyRepository;
+
 
     public BaseData(IRiskRepository riskRepository, IWarrantyRepository warrantyRepository, IProductRepository productRepository, IProductWarrantyRepository productWarrantyRepository) {
         this.riskRepository = riskRepository;
@@ -169,4 +173,8 @@ public class BaseData {
         return warranties;
 
     }
+
+
+
+
 }
