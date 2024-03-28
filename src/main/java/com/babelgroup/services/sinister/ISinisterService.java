@@ -7,4 +7,6 @@ public interface ISinisterService {
     SinisterDto add(SinisterDto sinister);
     SinisterDto get(String id);
 
+    SinisterDto update(String id, SinisterDto sinister);
+
 }

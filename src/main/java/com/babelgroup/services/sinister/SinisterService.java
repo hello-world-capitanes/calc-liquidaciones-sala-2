@@ -1,6 +1,7 @@
 package com.babelgroup.services.sinister;
 
 import com.babelgroup.dtos.DtoToEntity;
+import com.babelgroup.dtos.EntityToDto;
 import com.babelgroup.dtos.SinisterDto;
 import com.babelgroup.model.Sinister;
 import com.babelgroup.repositories.policy.IPolicyRepository;
@@ -48,11 +49,29 @@ public class SinisterService implements ISinisterService {
         sinisterDto.policy = sinister.getPolicy().getId();
         sinisterDto.date = sinister.getDate();
         sinisterDto.cause = sinister.getCause().getId();
-        sinisterDto.damageList = sinister.getDamageList().stream().map(dtoToEntity::damageDto).toList();
+        sinisterDto.damageList = sinister.getDamageList().stream().map(EntityToDto::damageDto).toList();
         sinisterDto.address = sinister.getAddress();
         sinisterDto.realCapital = sinister.getRealCapital();
         return sinisterDto;
     }
 
+    @Override
+    public SinisterDto update(String id, SinisterDto sinisterDto){
+        Sinister sinister = sinisterRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sinister not found with id: " + id));
+
+        sinister.setPolicy(policyRepository.findById(sinisterDto.policy)
+                .orElseThrow(() -> new EntityNotFoundException("Policy not found")));
+
+        sinister.setDate(sinisterDto.date);
+
+        sinister.setCause(riskRepository.findById(sinisterDto.cause)
+                .orElseThrow(() -> new EntityNotFoundException("Cause not found")));
+
+        sinister.setDamageList(sinisterDto.damageList.stream().map(dtoToEntity::damage).toList());
+        sinister.setRealCapital(sinisterDto.realCapital);
+        Sinister updatedSinister = sinisterRepository.save(sinister);
+        return EntityToDto.sinisterDto(updatedSinister);
+    }
 
 }
