@@ -1,5 +1,6 @@
 package com.babelgroup.services.sinister;
 
+import com.babelgroup.dtos.DamageDto;
 import com.babelgroup.dtos.DtoToEntity;
 import com.babelgroup.dtos.EntityToDto;
 import com.babelgroup.dtos.SinisterDto;
@@ -10,6 +11,9 @@ import com.babelgroup.repositories.sinister.ISinisterRepository;
 import com.babelgroup.repositories.warranty.IWarrantyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SinisterService implements ISinisterService {
@@ -74,4 +78,19 @@ public class SinisterService implements ISinisterService {
         return EntityToDto.sinisterDto(updatedSinister);
     }
 
+    public List<DamageDto> getSinisterDamages(String id) {
+        Sinister sinister = sinisterRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sinister not found with id: " + id));
+        return sinister.getDamageList().stream()
+                .map(EntityToDto::damageDto)
+                .collect(Collectors.toList());
+    }
+
+    public SinisterDto addDamageToSinister(String id, DamageDto damageDto) {
+        Sinister sinister = sinisterRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sinister not found with id: " + id));
+        sinister.getDamageList().add(dtoToEntity.damage(damageDto));
+        Sinister updatedSinister = sinisterRepository.save(sinister);
+        return EntityToDto.sinisterDto(updatedSinister);
+    }
 }
