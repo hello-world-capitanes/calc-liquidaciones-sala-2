@@ -43,4 +43,22 @@ public class SinisterController {
         SinisterDto updatedSinisterDto = sinisterService.addDamageToSinister(id, damageDto);
         return ResponseEntity.ok(updatedSinisterDto);
     }
+
+    @GetMapping("/{sinisterId}/damages/{damageId}")
+    public ResponseEntity<DamageDto> getDamageFromSinister(@PathVariable String sinisterId, @PathVariable String damageId) {
+        DamageDto damageDto = sinisterService.getDamageFromSinister(sinisterId, damageId);
+        return ResponseEntity.ok(damageDto);
+    }
+
+    @PutMapping("/{sinisterId}/damages/{damageId}")
+    public ResponseEntity<DamageDto> updateDamageInSinister(@PathVariable String sinisterId, @PathVariable String damageId, @RequestBody DamageDto updatedDamageDto) {
+        DamageDto updatedDamage = sinisterService.updateDamageInSinister(sinisterId, damageId, updatedDamageDto);
+        return ResponseEntity.ok(updatedDamage);
+    }
+
+    @DeleteMapping("/{sinisterId}/damages/{damageId}")
+    public ResponseEntity<Void> deleteDamageInSinister(@PathVariable String sinisterId, @PathVariable String damageId) {
+        sinisterService.deleteDamageInSinister(sinisterId, damageId);
+        return ResponseEntity.noContent().build();
+    }
 }

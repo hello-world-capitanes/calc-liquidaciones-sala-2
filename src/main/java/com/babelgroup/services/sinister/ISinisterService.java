@@ -12,5 +12,9 @@ public interface ISinisterService {
     SinisterDto update(String id, SinisterDto sinister);
     List<DamageDto> getSinisterDamages(String id);
     SinisterDto addDamageToSinister(String id, DamageDto damage);
+    DamageDto getDamageFromSinister(String sinisterId, String damageId);
+    DamageDto updateDamageInSinister(String sinisterId, String damageId, DamageDto updatedDamage);
+    void deleteDamageInSinister(String sinisterId, String damageId);
+
 
 }
