@@ -61,4 +61,15 @@ public class SinisterController {
         sinisterService.deleteDamageInSinister(sinisterId, damageId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{sinisterId}/liquidation")
+    public ResponseEntity<String> performLiquidation(@PathVariable String sinisterId, @RequestBody String request) {
+        String result = sinisterService.performLiquidation(sinisterId, request);
+        return ResponseEntity.ok(result);
+    }
+    @GetMapping("/{sinisterId}/liquidation/{liquidationId}")
+       public ResponseEntity<String> getLiquidation(@PathVariable String sinisterId, @PathVariable String liquidationId) {
+        String result = String.valueOf(sinisterService.getLiquidation(sinisterId, liquidationId));
+        return ResponseEntity.ok(result);
+    }
 }

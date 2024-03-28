@@ -2,6 +2,7 @@ package com.babelgroup.services.sinister;
 
 import com.babelgroup.dtos.DamageDto;
 import com.babelgroup.dtos.SinisterDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface ISinisterService {
     DamageDto getDamageFromSinister(String sinisterId, String damageId);
     DamageDto updateDamageInSinister(String sinisterId, String damageId, DamageDto updatedDamage);
     void deleteDamageInSinister(String sinisterId, String damageId);
-
+    String performLiquidation(String id,String request);
+    ResponseEntity<String> getLiquidation(String sinisterId, String liquidationId);
 
 }

@@ -10,6 +10,7 @@ import com.babelgroup.repositories.risk.IRiskRepository;
 import com.babelgroup.repositories.sinister.ISinisterRepository;
 import com.babelgroup.repositories.warranty.IWarrantyRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class SinisterService implements ISinisterService {
     }
 
     @Override
-    public SinisterDto get(String id){
+    public SinisterDto get(String id) {
         Sinister sinister = sinisterRepository.findById(id).orElseThrow();
         SinisterDto sinisterDto = new SinisterDto();
         sinisterDto.id = sinister.getId();
@@ -60,7 +61,7 @@ public class SinisterService implements ISinisterService {
     }
 
     @Override
-    public SinisterDto update(String id, SinisterDto sinisterDto){
+    public SinisterDto update(String id, SinisterDto sinisterDto) {
         Sinister sinister = sinisterRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Sinister not found with id: " + id));
 
@@ -78,7 +79,7 @@ public class SinisterService implements ISinisterService {
         return EntityToDto.sinisterDto(updatedSinister);
     }
 
-   @Override
+    @Override
     public List<DamageDto> getSinisterDamages(String id) {
         Sinister sinister = sinisterRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Sinister not found with id: " + id));
@@ -129,6 +130,16 @@ public class SinisterService implements ISinisterService {
                 .orElseThrow(() -> new EntityNotFoundException("Sinister not found with id: " + sinisterId));
         sinister.getDamageList().removeIf(damage -> damage.getId().equals(damageId));
         sinisterRepository.save(sinister);
+    }
+
+    @Override
+    public String performLiquidation(String id, String request) {
+        return "TODO: Implement post liquidation logic";
+    }
+
+    @Override
+    public ResponseEntity<String> getLiquidation(String sinisterId, String liquidationId) {
+        return ResponseEntity.ok("TODO: Implement get liquidation logic");
     }
 
 }
